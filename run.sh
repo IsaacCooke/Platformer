@@ -1,2 +1,3 @@
-g++ main.cpp -lraylib -o program
-./program
+cd build
+make
+./game
