@@ -7,13 +7,45 @@ void Player::init(const int screenWidth, const int screenHeight){
 }
 
 void Player::update(){
+  // Movement
   this->movement = 0;
   if (IsKeyDown(KEY_D)) this->movement = 1;
   if (IsKeyDown(KEY_A)) this->movement = -1;
 
   this->position.x += movement * speed;
+
+  // Set state
+  if (movement != 0){
+    state = RUN;
+    activeTexture = runTexture;
+    activeFrameRec = runFrameRec;
+  } else {
+    state = IDLE;
+    activeTexture = runTexture;
+    activeFrameRec = idleFrameRec;
+  }
+
+  // Animation
+  framesCounter++;
+  if (framesCounter >= (60 / framesSpeed )){
+    framesCounter = 0;
+    currentFrame++;
+
+    switch (state) {
+      case RUN:
+        if (currentFrame > 7) currentFrame = 0;
+        runFrameRec.x = (float)currentFrame * (float)runTexture.width / 8;
+        break;
+      default:
+        if (currentFrame > 9) currentFrame = 0;
+        idleFrameRec.x = (float)currentFrame * (float)idleTexture.width / 10;
+        break;
+    }
+
+  }
 }
 
 void Player::draw(){
-  DrawCircleV(position, 50, GREEN);
+  // Render sprite
+  DrawTextureRec(activeTexture, activeFrameRec, position, WHITE);
 }
