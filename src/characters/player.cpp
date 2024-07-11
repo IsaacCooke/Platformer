@@ -1,5 +1,6 @@
 #include "player.h"
 #include <raylib.h>
+#include <iostream>
 
 void Player::init(const int screenWidth, const int screenHeight){
   this->position = {(float)screenWidth / 2, (float)screenHeight / 2};
@@ -14,11 +15,12 @@ void Player::update(){
 
   this->position.x += movement * speed;
 
-  // Set state
+  // Set State
   if (movement != 0){
     state = RUN;
     activeTexture = runTexture;
     activeFrameRec = runFrameRec;
+    std::cout << "In run state" << std::endl;
   } else {
     state = IDLE;
     activeTexture = runTexture;
@@ -48,4 +50,5 @@ void Player::update(){
 void Player::draw(){
   // Render sprite
   DrawTextureRec(activeTexture, activeFrameRec, position, WHITE);
+  std::cout << activeFrameRec.width << std::endl;
 }
