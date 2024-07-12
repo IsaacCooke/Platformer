@@ -1,29 +1,18 @@
-#include <raylib.h>
-#include "src/characters/player.h"
+#include <iostream>
+#include <SDL.h>
+using namespace std;
 
-int main() {
-  const int screenWidth = 800;
-  const int screenHeight = 450;
+int main(int argc, char* argv[])
+{
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
+	{
+		cout << "SDL initialization failed. SDL Error: " << SDL_GetError();
+	}
+	else
+	{
+		cout << "SDL initialization succeeded!";
+	}
 
-  InitWindow(screenWidth, screenHeight, "Platformer Game");
-  SetTargetFPS(60);
-
-  Player player;
-  player.init(screenWidth, screenHeight);
-
-  while (!WindowShouldClose()){
-
-    player.update();
-
-    BeginDrawing();
-
-    ClearBackground(RAYWHITE);
-    player.draw();
-
-    EndDrawing();
-  }
-
-  CloseWindow();
-
-  return 0;
+	cin.get();
+	return 0;
 }

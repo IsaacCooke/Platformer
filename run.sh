@@ -1,3 +1,2 @@
-cd build
-make
-./game
+g++ Main.cpp -o main -lSDL2
+./main
