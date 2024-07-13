@@ -1,93 +1,61 @@
-#include <SDL2/SDL_error.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_video.h>
+#include "src/characters/Player.h"
+#include "src/Include.h"
 #include <iostream>
-
-#ifdef _WIN32
-  #include <SDL.h>
-#elif unix
-  #include <SDL2/SDL.h>
-#endif
-
-using namespace std;
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
-int main(int argc, char* argv[]){
-
-  (void)argc;
-  (void)argv;
-
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
-		cout << "SDL initialization failed. SDL Error: " << SDL_GetError();
-    return 0;
-	}
-
-  #if defined linux && SDL_VERSION_ATLEAST(2, 0, 8)
-    // Disable compositor bypass
-    if(!SDL_SetHint(SDL_HINT_VIDEO_X11_NET_WM_BYPASS_COMPOSITOR, "0"))
-    {
-        std::cout << "SDL can not disable compositor bypass!" << std::endl;
-        return 0;
+int main(int argc, char* argv[]) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        std::cout << "SDL initialization failed. SDL Error: " << SDL_GetError();
+        return 1;
     }
-  #endif
 
-  // Create Window
-  SDL_Window *window = SDL_CreateWindow("Platformer Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    Player player;
+    player.init(); // Initialize player
 
-  if (!window){
-    cout << "Window could not be created! Error: " << SDL_GetError() << endl;
-  } else {
-    // Create renderer
+    SDL_Window *window = SDL_CreateWindow("Platformer Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if (!window) {
+        std::cout << "Window could not be created! Error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if(!renderer){
-      cout << "Renderer could not be created. Error: " << SDL_GetError() << endl;
-    } else {
+    if(!renderer) {
+        std::cout << "Renderer could not be created. Error: " << SDL_GetError() << std::endl;
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
 
-      SDL_Rect squareRect;
+    SDL_Rect squareRect;
+    squareRect.w = 50; // Set a size for the rectangle
+    squareRect.h = 50; // Set a size for the rectangle
+    squareRect.x = SCREEN_WIDTH / 2 - squareRect.w / 2;
+    squareRect.y = SCREEN_HEIGHT / 2 - squareRect.h / 2;
 
-      // Set dimensions
-      squareRect.x = min(SCREEN_WIDTH, SCREEN_HEIGHT) / 2;
-      squareRect.y = min(SCREEN_WIDTH, SCREEN_HEIGHT) / 2;
-
-      // Set position
-      squareRect.x = SCREEN_WIDTH / 2 - squareRect.w / 2;
-      squareRect.y = SCREEN_HEIGHT / 2 - squareRect.h /2;
-
-
-      bool quit = false;
-
-      // Event loop
-      while (!quit){
+    bool quit = false;
+    while (!quit) {
         SDL_Event e;
-
-        // Wait for the next event
-        SDL_WaitEvent(&e);
-
-        // Check if event is to quit
-        if (e.type == SDL_QUIT){
-          quit = true;
+        while (SDL_PollEvent(&e) != 0) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            }
         }
 
-        // Set background
-        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        player.update();
 
-        // Draw filled square
-        SDL_RenderFillRect(renderer, &squareRect);
-
-        // Update screen
-        SDL_RenderPresent(renderer);
-      }
+        SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF); // White background
+        SDL_RenderClear(renderer); // Clear the window
+        SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF); // Black color for the square
+        SDL_RenderFillRect(renderer, &squareRect); // Render the square
+        SDL_RenderPresent(renderer); // Update the window
     }
 
-    // Destroy window
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-  }
+    SDL_Quit();
 
-  // Quit SDL
-  SDL_Quit();
-
-	return 0;
+    return 0;
 }
