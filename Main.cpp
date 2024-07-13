@@ -1,5 +1,7 @@
 #include "src/characters/Player.h"
 #include "src/Include.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 
 #define SCREEN_WIDTH 800
@@ -11,12 +13,20 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+  // Initialise SDL_image
+  if (!(IMG_Init(IMG_INIT_PNG)) & IMG_INIT_PNG) {
+    cerr << "IMG_Init Error: " << IMG_GetError() << endl;
+    SDL_Quit();
+    return 1;
+  }
+
     Player player;
     player.init(); // Initialize player
 
     SDL_Window *window = SDL_CreateWindow("Platformer Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     if (!window) {
         std::cout << "Window could not be created! Error: " << SDL_GetError() << std::endl;
+        IMG_Quit();
         SDL_Quit();
         return 1;
     }
