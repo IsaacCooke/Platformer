@@ -35,9 +35,12 @@ void Player::update(){
   }
   if (keystates[SDL_SCANCODE_D]){
     movement -= 1;
+    cout << this->position.x << endl;
   }
 
   this->position.x += movement * speed;
+
+  this->renderLocation.x = position.x;
 }
 
 void Player::draw(){

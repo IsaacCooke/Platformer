@@ -4,7 +4,7 @@
 class Player {
 private:
   // Movement
-  float speed;
+  float speed = 0.005;
   Vector2 position;
   float movement;
 
