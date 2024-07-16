@@ -6,12 +6,14 @@ Player::Player(SDL_Renderer *renderer, bool& failed) {
   SDL_Surface *idleBMP = IMG_Load("../assets/characters/knight/_Idle.png");
   if (idleBMP == nullptr){
     failed = true;
+    cerr << IMG_GetError() << endl;
   }
 
   SDL_Texture *idleTexture = SDL_CreateTextureFromSurface(this->renderer, idleBMP);
   SDL_FreeSurface(idleBMP);
   if (idleTexture == nullptr){
     failed = true;
+    cerr << IMG_GetError() << endl;
   }
   this->idleTexture = idleTexture;
 
