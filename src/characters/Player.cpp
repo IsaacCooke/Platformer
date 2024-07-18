@@ -1,12 +1,15 @@
 #include "Player.h"
 
 Player::Player(SDL_Renderer *renderer, bool& failed) {
+  this->renderLocation = {position.x, position.y, this->renderLocation.w, this->renderLocation.h};
+
   this->renderer = renderer;
 
-  SDL_Surface *idleBMP = IMG_Load("../assets/characters/knight/_Idle.png");
+  SDL_Surface *idleBMP = IMG_Load(IDLE_KNIGHT);
   if (idleBMP == nullptr){
     failed = true;
     cerr << IMG_GetError() << endl;
+    return;
   }
 
   SDL_Texture *idleTexture = SDL_CreateTextureFromSurface(this->renderer, idleBMP);
@@ -37,14 +40,12 @@ void Player::update(){
   }
   if (keystates[SDL_SCANCODE_D]){
     movement -= 1;
-    cout << this->position.x << endl;
   }
 
   this->position.x += movement * speed;
-
-  this->renderLocation.x = position.x;
 }
 
 void Player::draw(){
+  this->renderLocation.x = position.x;
   SDL_RenderCopy(renderer, idleTexture, &renderTarget, &renderLocation);
 }

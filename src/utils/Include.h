@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 #ifdef _WIN32
   #include <SDL.h>
@@ -8,7 +9,13 @@
   #include <SDL2/SDL_image.h>
 #endif
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#ifdef _WIN32
+  #define BASE "../../assets/"
+#elif unix
+  #define BASE "../assets/"
+#endif
+
+#define SCREEN_WIDTH 1200
+#define SCREEN_HEIGHT 1200
 
 using namespace std;

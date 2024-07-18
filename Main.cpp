@@ -1,6 +1,6 @@
-#include "src/Include.h"
+#include "src/utils/Include.h"
 #include "src/characters/Player.h"
-#include <iostream>
+#include <SDL_video.h>
 
 int main(int argc, char *argv[]) {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
   }
 
   // Initialise SDL_image
-  if (!(IMG_Init(IMG_INIT_PNG)) & IMG_INIT_PNG) {
+  if (!((IMG_Init(IMG_INIT_PNG)) & IMG_INIT_PNG)) {
     cerr << "IMG_Init Error: " << IMG_GetError() << endl;
     SDL_Quit();
     return 1;
@@ -26,6 +26,9 @@ int main(int argc, char *argv[]) {
     SDL_Quit();
     return 1;
   }
+
+  SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+  SDL_ShowCursor(SDL_DISABLE);
 
   // Create Renderer
   SDL_Renderer *renderer =
@@ -50,11 +53,15 @@ int main(int argc, char *argv[]) {
   }
   player.init();
 
+  // Set V-Sync
+  SDL_GL_SetSwapInterval(-1);
+
   bool quit = false;
   while (!quit) {
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
-      if (e.type == SDL_QUIT) {
+      const Uint8* keystates = SDL_GetKeyboardState(NULL);
+      if ((e.type == SDL_QUIT) || (keystates[SDL_SCANCODE_ESCAPE])) {
         quit = true;
       }
     }
@@ -76,3 +83,36 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+
+// #include <windows.h>
+// #include <string>
+// #include <iostream>
+//
+// std::string GetCurrentDirectory()
+// {
+//     // Buffer to hold the current directory path
+//     char buffer[MAX_PATH];
+//
+//     // Get the current directory path
+//     DWORD length = GetCurrentDirectoryA(MAX_PATH, buffer);
+//
+//     // If the function fails, length will be 0
+//     if (length == 0)
+//     {
+//         std::cerr << "Error getting current directory." << std::endl;
+//         return "";
+//     }
+//
+//     // Convert the char array to a std::string and return it
+//     return std::string(buffer, length);
+// }
+//
+// int main()
+// {
+//     std::string currentDirectory = GetCurrentDirectory();
+//     if (!currentDirectory.empty())
+//     {
+//         std::cout << "Current Directory: " << currentDirectory << std::endl;
+//     }
+//     return 0;
+// }
